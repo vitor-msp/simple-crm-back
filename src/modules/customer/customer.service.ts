@@ -6,9 +6,10 @@ import {
   CreateCustomerInputDto,
   DefaultCustomerOutputDto,
   GetCustomerOutputDto,
-  PutCustomerInputDto,
+  UpdateCustomerInputDto,
 } from './customer.dto';
 import { Customer } from './domain/Customer';
+import { CustomerDBBuilder } from 'src/database/schema/builders/CustomerDB.builder';
 
 @Injectable()
 export class CustomerService {
@@ -20,52 +21,43 @@ export class CustomerService {
   async create(dto: CreateCustomerInputDto): Promise<DefaultCustomerOutputDto> {
     const { cpf, name } = dto;
     const customer = new Customer({
-      cpf,
-      name,
+      saved: false,
+      notSavedProps: { cpf, name },
     });
-    const customerDB = new CustomerDB(
-      customer.id,
-      customer.getName(),
-      customer.getCpf(),
-    );
+    const customerDB = new CustomerDB();
+    CustomerDBBuilder.hydrate(customerDB, customer.get());
     await this.customersRepository.save(customerDB);
     return {
-      id: customer.id,
+      id: customer.get().id,
     };
   }
 
   async get(id: string): Promise<GetCustomerOutputDto> {
-    const customer = await this.customersRepository.findOneBy({ id });
-    if (!customer) throw new Error('not found');
-    const { cpf, name } = customer;
-    return { cpf, id: customer.id, name };
+    const customerDB = await this.customersRepository.findOneBy({ id });
+    if (!customerDB) throw new Error('not found');
+    return customerDB.get();
   }
 
   async getAll(): Promise<GetCustomerOutputDto[]> {
-    const customers = await this.customersRepository.find();
-    return customers.map(({ id, cpf, name }) => {
-      return {
-        id,
-        cpf,
-        name,
-      };
+    const customersDB = await this.customersRepository.find();
+    return customersDB.map((c) => {
+      return c.get();
     });
   }
 
   async update(
     id: string,
-    input: PutCustomerInputDto,
+    input: UpdateCustomerInputDto,
   ): Promise<DefaultCustomerOutputDto> {
     const customerDB = await this.customersRepository.findOneBy({ id });
     if (!customerDB) throw new Error('not found');
-    const { cpf, name } = customerDB;
-    const editedCustomer = new Customer({
-      id: customerDB.id,
-      name: input.name ?? name,
-      cpf: input.cpf ?? cpf,
+    const customer = new Customer({
+      saved: true,
+      savedProps: customerDB.get(),
     });
-    customerDB.name = editedCustomer.getName();
-    customerDB.cpf = editedCustomer.getCpf();
+    if (input.cpf) customer.setCpf(input.cpf);
+    if (input.name) customer.setName(input.name);
+    CustomerDBBuilder.hydrate(customerDB, customer.get());
     await this.customersRepository.save(customerDB);
     return {
       id: customerDB.id,

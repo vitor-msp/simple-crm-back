@@ -1,3 +1,4 @@
+import { CustomerPropsDB } from 'src/modules/customer/domain/contract/Customer.contract';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -14,9 +15,11 @@ export class CustomerDB {
   @Column({ nullable: false, unique: true, length: 11 })
   cpf: string;
 
-  constructor(id: string, name: string, cpf: string) {
-    this.id = id;
-    this.name = name;
-    this.cpf = cpf;
+  get(): CustomerPropsDB {
+    return {
+      id: this.id,
+      cpf: this.cpf,
+      name: this.name,
+    };
   }
 }
