@@ -1,3 +1,4 @@
+import { ProductPropsDB } from 'src/modules/product/domain/contract/Product.contract';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -14,9 +15,11 @@ export class ProductDB {
   @Column({ type: 'decimal', nullable: false })
   value: number;
 
-  constructor(id: string, description: string, value: number) {
-    this.id = id;
-    this.description = description;
-    this.value = value;
+  get(): ProductPropsDB {
+    return {
+      id: this.id,
+      description: this.description,
+      value: this.value,
+    };
   }
 }

@@ -10,7 +10,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductInputDto, PutProductInputDto } from './product.dto';
+import { CreateProductInputDto, UpdateProductInputDto } from './product.dto';
 import { Response } from 'express';
 
 @Controller('/product')
@@ -50,7 +50,7 @@ export class ProductController {
   @Put('/:id')
   async put(
     @Param('id') id: string,
-    @Body() input: PutProductInputDto,
+    @Body() input: UpdateProductInputDto,
     @Res() res: Response,
   ) {
     try {

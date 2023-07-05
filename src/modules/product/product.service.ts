@@ -3,12 +3,13 @@ import {
   CreateProductInputDto,
   DefaultProductOutputDto,
   GetProductOutputDto,
-  PutProductInputDto,
+  UpdateProductInputDto,
 } from './product.dto';
 import { Product } from './domain/Product';
 import { Repository } from 'typeorm';
 import { ProductDB } from 'src/database/schema/ProductDB';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductDBBuilder } from 'src/database/schema/builders/ProductDB.builder';
 
 @Injectable()
 export class ProductService {
@@ -20,52 +21,46 @@ export class ProductService {
   async create(dto: CreateProductInputDto): Promise<DefaultProductOutputDto> {
     const { description, value } = dto;
     const product = new Product({
-      description,
-      value,
+      saved: false,
+      notSavedProps: {
+        description,
+        value,
+      },
     });
-    const productDB = new ProductDB(
-      product.id,
-      product.getDescription(),
-      product.getValue(),
-    );
+    const productDB = new ProductDB();
+    ProductDBBuilder.hydrate(productDB, product.get());
     await this.productsRepository.save(productDB);
     return {
-      id: product.id,
+      id: product.get().id,
     };
   }
 
   async get(id: string): Promise<GetProductOutputDto> {
-    const product = await this.productsRepository.findOneBy({ id });
-    if (!product) throw new Error('not found');
-    const { description, value } = product;
-    return { description, id: product.id, value };
+    const productDB = await this.productsRepository.findOneBy({ id });
+    if (!productDB) throw new Error('not found');
+    return productDB.get();
   }
 
   async getAll(): Promise<GetProductOutputDto[]> {
-    const products = await this.productsRepository.find();
-    return products.map(({ id, description, value }) => {
-      return {
-        id,
-        description,
-        value,
-      };
+    const productsDB = await this.productsRepository.find();
+    return productsDB.map((p) => {
+      return p.get();
     });
   }
 
   async update(
     id: string,
-    input: PutProductInputDto,
+    input: UpdateProductInputDto,
   ): Promise<DefaultProductOutputDto> {
     const productDB = await this.productsRepository.findOneBy({ id });
     if (!productDB) throw new Error('not found');
-    const { description, value } = productDB;
-    const editedProduct = new Product({
-      id: productDB.id,
-      description: input.description ?? description,
-      value: input.value ?? value,
+    const product = new Product({
+      saved: true,
+      savedProps: productDB.get(),
     });
-    productDB.description = editedProduct.getDescription();
-    productDB.value = editedProduct.getValue();
+    if (input.description) product.setDescription(input.description);
+    if (input.value) product.setValue(input.value);
+    ProductDBBuilder.hydrate(productDB, product.get());
     await this.productsRepository.save(productDB);
     return {
       id: productDB.id,

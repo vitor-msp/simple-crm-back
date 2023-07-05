@@ -1,18 +1,17 @@
-export type CreateProductInputDto = {
-  description: string;
-  value: number;
-};
+import {
+  ProductPropsCreate,
+  ProductPropsDB,
+} from './domain/contract/Product.contract';
+
+export type CreateProductInputDto = ProductPropsCreate;
+
 export type DefaultProductOutputDto = {
   id: string;
 };
 
-export type GetProductOutputDto = {
-  id: string;
-  description: string;
-  value: number;
-};
+export type GetProductOutputDto = ProductPropsDB;
 
-export type PutProductInputDto = {
+export type UpdateProductInputDto = {
   description?: string;
   value?: number;
 };
