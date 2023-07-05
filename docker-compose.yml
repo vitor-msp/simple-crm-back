@@ -6,16 +6,21 @@ services:
     container_name: db
     restart: unless-stopped
     env_file: .env
-    volumes: 
-      - dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_USER=$DB_USER_TEST
+      - MYSQL_PASSWORD=$DB_PASSWORD_TEST
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD_TEST
+      - MYSQL_DATABASE=$DB_NAME_TEST
+    # volumes: 
+    #   - dbdata:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
     ports:
       - "3306:3306"
     networks:
       - app-network
 
-volumes:
-  dbdata:
+# volumes:
+#   dbdata:
 
 networks:
   app-network:
