@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { IProduct } from './IProduct';
 
 export type ProductProps = {
   id?: string;
@@ -6,7 +7,7 @@ export type ProductProps = {
   value: number;
 };
 
-export class Product {
+export class Product implements IProduct {
   readonly id: string;
   private description: string;
   private value: number;

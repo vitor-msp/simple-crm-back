@@ -6,60 +6,77 @@ import {
   PutProductInputDto,
 } from './product.dto';
 import { Product } from './domain/Product';
+import { Repository } from 'typeorm';
+import { ProductDB } from 'src/database/schema/ProductDB';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ProductService {
-  private readonly products: Product[] = [];
+  constructor(
+    @InjectRepository(ProductDB)
+    private productsRepository: Repository<ProductDB>,
+  ) {}
 
-  create(dto: CreateProductInputDto): DefaultProductOutputDto {
+  async create(dto: CreateProductInputDto): Promise<DefaultProductOutputDto> {
     const { description, value } = dto;
     const product = new Product({
       description,
       value,
     });
-    this.products.push(product);
+    const productDB = new ProductDB(
+      product.id,
+      product.getDescription(),
+      product.getValue(),
+    );
+    await this.productsRepository.save(productDB);
     return {
       id: product.id,
     };
   }
 
-  get(id: string): GetProductOutputDto {
-    const product = this.products.find((p) => p.id === id);
+  async get(id: string): Promise<GetProductOutputDto> {
+    const product = await this.productsRepository.findOneBy({ id });
     if (!product) throw new Error('not found');
-    return {
-      id: product.id,
-      description: product.getDescription(),
-      value: product.getValue(),
-    };
+    const { description, value } = product;
+    return { description, id: product.id, value };
   }
 
-  getAll(): GetProductOutputDto[] {
-    return this.products.map((p) => {
+  async getAll(): Promise<GetProductOutputDto[]> {
+    const products = await this.productsRepository.find();
+    return products.map(({ id, description, value }) => {
       return {
-        id: p.id,
-        description: p.getDescription(),
-        value: p.getValue(),
+        id,
+        description,
+        value,
       };
     });
   }
 
-  update(id: string, input: PutProductInputDto): DefaultProductOutputDto {
-    const index = this.products.findIndex((p) => p.id === id);
-    if (index === -1) throw new Error('not found');
-    const product = this.products[index];
-    if (input.description) product.setDescription(input.description);
-    if (input.value) product.setValue(input.value);
+  async update(
+    id: string,
+    input: PutProductInputDto,
+  ): Promise<DefaultProductOutputDto> {
+    const productDB = await this.productsRepository.findOneBy({ id });
+    if (!productDB) throw new Error('not found');
+    const { description, value } = productDB;
+    const editedProduct = new Product({
+      id: productDB.id,
+      description: input.description ?? description,
+      value: input.value ?? value,
+    });
+    productDB.description = editedProduct.getDescription();
+    productDB.value = editedProduct.getValue();
+    await this.productsRepository.save(productDB);
     return {
-      id: product.id,
+      id: productDB.id,
     };
   }
 
-  delete(id: string): DefaultProductOutputDto {
-    const index = this.products.findIndex((p) => p.id === id);
-    if (index === -1) throw new Error('not found');
-    const product = this.products.splice(index, 1);
+  async delete(id: string): Promise<DefaultProductOutputDto> {
+    const result = await this.productsRepository.delete({ id });
+    if (result.affected < 1) throw new Error('not found');
     return {
-      id: product[0].id,
+      id,
     };
   }
 }

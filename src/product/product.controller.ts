@@ -20,30 +20,32 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  post(@Body() input: CreateProductInputDto): DefaultProductOutputDto {
+  async post(
+    @Body() input: CreateProductInputDto,
+  ): Promise<DefaultProductOutputDto> {
     return this.productService.create(input);
   }
 
   @Get('/:id')
-  get(@Param('id') id: string): GetProductOutputDto {
+  async get(@Param('id') id: string): Promise<GetProductOutputDto> {
     return this.productService.get(id);
   }
 
   @Get()
-  getAll(): GetProductOutputDto[] {
+  async getAll(): Promise<GetProductOutputDto[]> {
     return this.productService.getAll();
   }
 
   @Put('/:id')
-  put(
+  async put(
     @Param('id') id: string,
     @Body() input: PutProductInputDto,
-  ): DefaultProductOutputDto {
+  ): Promise<DefaultProductOutputDto> {
     return this.productService.update(id, input);
   }
 
   @Delete('/:id')
-  delete(@Param('id') id: string): DefaultProductOutputDto {
+  async delete(@Param('id') id: string): Promise<DefaultProductOutputDto> {
     return this.productService.delete(id);
   }
 }
