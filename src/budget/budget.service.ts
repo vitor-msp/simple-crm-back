@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BudgetDB } from 'src/database/schema/BudgetDB';
 import { Repository } from 'typeorm';
-import { CreateBudgetInputDto, DefaultBudgetOutputDto } from './budget.dto';
+import {
+  CreateBudgetInputDto,
+  DefaultBudgetOutputDto,
+  GetBudgetOutputDto,
+} from './budget.dto';
 import { CustomerDB } from 'src/database/schema/CustomerDB';
 import { Customer } from 'src/customer/domain/Customer';
 import { Budget } from './domain/Budget';
@@ -30,5 +34,52 @@ export class BudgetService {
     return {
       id: budget.id,
     };
+  }
+
+  async get(id: string): Promise<GetBudgetOutputDto> {
+    const budget = await this.budgetsRepository.findOne({
+      where: { id },
+      relations: { customer: true },
+    });
+    if (!budget) throw new Error('not found');
+    return {
+      id: budget.id,
+      customerId: budget.customer.id,
+      items: budget.items
+        ? budget.items.map(({ discount, product, id, quantity, value }) => {
+            return {
+              discount,
+              id,
+              productId: product.id,
+              quantity,
+              value,
+            };
+          })
+        : [],
+    };
+  }
+
+  async getAll(): Promise<GetBudgetOutputDto[]> {
+    const budgets = await this.budgetsRepository.find({
+      relations: { customer: true },
+    });
+    return budgets.map((budget) => {
+      const { customer, id } = budget;
+      return {
+        id,
+        customerId: customer.id,
+        items: budget.items
+          ? budget.items.map(({ discount, product, id, quantity, value }) => {
+              return {
+                discount,
+                id,
+                productId: product.id,
+                quantity,
+                value,
+              };
+            })
+          : [],
+      };
+    });
   }
 }
