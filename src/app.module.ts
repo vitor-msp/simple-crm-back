@@ -9,7 +9,7 @@ import { ProductModule } from './product/product.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DBConfig } from './database/config/DBConfig';
 import { CustomerModule } from './customer/customer.module';
-import { BudgetModule } from './budget/budget.module';
+import { BudgetModule } from './modules/budget/budget.module';
 
 @Module({
   imports: [
