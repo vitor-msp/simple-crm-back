@@ -5,13 +5,13 @@ export class CustomerDB {
   @PrimaryGeneratedColumn()
   pk: number;
 
-  @Column({ type: 'text', nullable: false, unique: true })
+  @Column({ nullable: false, unique: true, length: 36 })
   id: string;
 
   @Column({ type: 'text', nullable: false })
   name: string;
 
-  @Column({ type: 'text', nullable: false, unique: true })
+  @Column({ nullable: false, unique: true, length: 11 })
   cpf: string;
 
   constructor(id: string, name: string, cpf: string) {

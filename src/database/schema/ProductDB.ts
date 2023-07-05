@@ -5,7 +5,7 @@ export class ProductDB {
   @PrimaryGeneratedColumn()
   pk: number;
 
-  @Column({ unique: true })
+  @Column({ nullable: false, unique: true, length: 36 })
   id: string;
 
   @Column({ type: 'text', nullable: false })

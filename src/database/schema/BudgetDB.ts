@@ -14,15 +14,13 @@ export class BudgetDB {
   @PrimaryGeneratedColumn()
   pk: number;
 
-  @Column({ type: 'text', nullable: false, unique: true })
+  @Column({ nullable: false, unique: true, length: 36 })
   id: string;
 
   @OneToOne(() => CustomerDB)
   @JoinColumn()
-  @Column({ nullable: false })
   customer: CustomerDB;
 
-  @Column({ nullable: false })
   @OneToMany(() => BudgetItemDB, (item) => item.budget)
   items: BudgetItemDB[];
 

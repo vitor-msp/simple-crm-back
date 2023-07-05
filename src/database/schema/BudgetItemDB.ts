@@ -14,12 +14,11 @@ export class BudgetItemDB {
   @PrimaryGeneratedColumn()
   pk: number;
 
-  @Column({ type: 'text', nullable: false, unique: true })
+  @Column({ nullable: false, unique: true, length: 36 })
   id: string;
 
   @OneToOne(() => ProductDB)
   @JoinColumn()
-  @Column({ nullable: false })
   product: ProductDB;
 
   @Column({ type: 'decimal', nullable: false })
