@@ -5,7 +5,7 @@ export class CustomerDB {
   @PrimaryGeneratedColumn()
   pk: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'text', nullable: false, unique: true })
   id: string;
 
   @Column({ type: 'text', nullable: false })
