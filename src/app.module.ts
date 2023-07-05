@@ -8,9 +8,14 @@ import { AppService } from './app.service';
 import { ProductModule } from './product/product.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DBConfig } from './database/config/DBConfig';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
-  imports: [ProductModule, TypeOrmModule.forRoot(DBConfig.getInfo())],
+  imports: [
+    ProductModule,
+    CustomerModule,
+    TypeOrmModule.forRoot(DBConfig.getInfo()),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

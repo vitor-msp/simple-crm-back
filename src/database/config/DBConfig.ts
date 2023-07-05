@@ -1,10 +1,11 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ProductDB } from '../schema/ProductDB';
+import { CustomerDB } from '../schema/CustomerDB';
 
 export abstract class DBConfig {
   static getInfo(): TypeOrmModuleOptions {
     const type = 'mysql';
-    const entities = [ProductDB];
+    const entities = [ProductDB, CustomerDB];
     const production: TypeOrmModuleOptions = {
       type,
       host: process.env.DB_HOST,
