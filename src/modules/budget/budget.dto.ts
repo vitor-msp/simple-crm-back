@@ -13,8 +13,13 @@ type GetBudgetItemOutputDto = {
   quantity: number;
   discount: number;
 };
+
 export type GetBudgetOutputDto = {
   id: string;
-  items: GetBudgetItemOutputDto[];
   customerId: string;
+  items: GetBudgetItemOutputDto[];
+};
+
+export type UpdateBudgetInputDto = {
+  customerId?: string;
 };

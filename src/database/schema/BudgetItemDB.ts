@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { ProductDB } from './ProductDB';
 import { BudgetDB } from './BudgetDB';
+import { BudgetItemPropsDBOut } from 'src/modules/budget/domain/contract/BudgetItem.contract';
 
 @Entity()
 export class BudgetItemDB {
@@ -33,15 +34,13 @@ export class BudgetItemDB {
   @ManyToOne(() => BudgetDB, (budget) => budget.items)
   budget: BudgetDB;
 
-  constructor(
-    id: string,
-    product: ProductDB,
-    quantity: number,
-    discount?: number,
-  ) {
-    this.id = id;
-    this.product = product;
-    this.quantity = quantity;
-    this.discount = discount ?? 0;
+  get(): BudgetItemPropsDBOut {
+    return {
+      id: this.id,
+      discount: this.discount,
+      quantity: this.quantity,
+      value: this.value,
+      product: this.product.get(),
+    };
   }
 }

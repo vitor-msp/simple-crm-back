@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BudgetDB } from 'src/database/schema/BudgetDB';
 import { Repository } from 'typeorm';
 import {
   CreateBudgetInputDto,
   DefaultBudgetOutputDto,
   GetBudgetOutputDto,
+  UpdateBudgetInputDto,
 } from './budget.dto';
 import { CustomerDB } from 'src/database/schema/CustomerDB';
-import { Customer } from 'src/customer/domain/Customer';
+import { Customer } from 'src/modules/customer/domain/Customer';
 import { Budget } from './domain/Budget';
+import { BudgetDBBuilder } from 'src/database/schema/builders/BudgetDB.builder';
+import { BudgetDB } from 'src/database/schema/BudgetDB';
 
 @Injectable()
 export class BudgetService {
@@ -21,32 +23,34 @@ export class BudgetService {
   ) {}
 
   async create(dto: CreateBudgetInputDto): Promise<DefaultBudgetOutputDto> {
-    const { customerId } = dto;
     const customerDB = await this.customersRepository.findOneBy({
-      id: customerId,
+      id: dto.customerId,
     });
     if (!customerDB) throw new Error('customer not found');
-    const { cpf, id, name } = customerDB;
-    const customer = new Customer({ cpf, name, id });
-    const budget = new Budget({ customer });
-    const budgetDB = new BudgetDB(budget.id, customerDB, []);
+    const customer = new Customer({
+      saved: true,
+      savedProps: customerDB.get(),
+    });
+    const budget = new Budget({ saved: false, notSavedProps: { customer } });
+    const budgetDB = new BudgetDB();
+    BudgetDBBuilder.hydrate(budgetDB, budget.get(), customerDB);
     await this.budgetsRepository.save(budgetDB);
     return {
-      id: budget.id,
+      id: budget.get().id,
     };
   }
 
   async get(id: string): Promise<GetBudgetOutputDto> {
-    const budget = await this.budgetsRepository.findOne({
+    const budgetDB = await this.budgetsRepository.findOne({
       where: { id },
       relations: { customer: true },
     });
-    if (!budget) throw new Error('not found');
+    if (!budgetDB) throw new Error('not found');
     return {
-      id: budget.id,
-      customerId: budget.customer.id,
-      items: budget.items
-        ? budget.items.map(({ discount, product, id, quantity, value }) => {
+      id: budgetDB.id,
+      customerId: budgetDB.customer.id,
+      items: budgetDB.items
+        ? budgetDB.items.map(({ discount, product, id, quantity, value }) => {
             return {
               discount,
               id,
@@ -60,10 +64,10 @@ export class BudgetService {
   }
 
   async getAll(): Promise<GetBudgetOutputDto[]> {
-    const budgets = await this.budgetsRepository.find({
+    const budgetsDB = await this.budgetsRepository.find({
       relations: { customer: true },
     });
-    return budgets.map((budget) => {
+    return budgetsDB.map((budget) => {
       const { customer, id } = budget;
       return {
         id,
@@ -81,5 +85,36 @@ export class BudgetService {
           : [],
       };
     });
+  }
+
+  async update(
+    id: string,
+    input: UpdateBudgetInputDto,
+  ): Promise<DefaultBudgetOutputDto> {
+    const budgetDB = await this.budgetsRepository.findOne({
+      where: { id },
+      relations: { customer: true },
+    });
+    // if (!budgetDB) throw new Error('budget not found');
+    // const { cpf, name } = budgetDB.customer;
+    // const budget = new Budget({
+    //   id: budgetDB.id,
+    //   customer: new Customer({ cpf, name, id: budgetDB.customer.id }),
+    // });
+    // let newCustomer: ICustomer, newCustomerDB: CustomerDB;
+    // if (input.customerId) {
+    //   newCustomerDB = await this.customersRepository.findOneBy({
+    //     id: input.customerId,
+    //   });
+    //   if (!newCustomerDB) throw new Error('customer not found');
+    //   const { cpf, id, name } = newCustomerDB;
+    //   newCustomer = new Customer({ cpf, name, id });
+    //   budget.setCustomer(newCustomer);
+    //   budgetDB.customer = newCustomerDB;
+    // }
+    // await this.budgetsRepository.save(budgetDB);
+    return {
+      id: budgetDB.id,
+    };
   }
 }
