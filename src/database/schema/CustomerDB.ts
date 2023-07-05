@@ -11,7 +11,7 @@ export class CustomerDB {
   @Column({ type: 'text', nullable: false })
   name: string;
 
-  @Column({ type: 'decimal', nullable: false, unique: true })
+  @Column({ type: 'text', nullable: false, unique: true })
   cpf: string;
 
   constructor(id: string, name: string, cpf: string) {
