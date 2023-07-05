@@ -4,9 +4,10 @@ import { BudgetController } from './budget.controller';
 import { BudgetService } from './budget.service';
 import { BudgetDB } from 'src/database/schema/BudgetDB';
 import { BudgetItemDB } from 'src/database/schema/BudgetItemDB';
+import { CustomerDB } from 'src/database/schema/CustomerDB';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BudgetDB, BudgetItemDB])],
+  imports: [TypeOrmModule.forFeature([BudgetDB, BudgetItemDB, CustomerDB])],
   controllers: [BudgetController],
   providers: [BudgetService],
 })

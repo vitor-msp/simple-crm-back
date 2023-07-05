@@ -1,18 +1,6 @@
-export type CreateProductInputDto = {
-  description: string;
-  value: number;
+export type CreateBudgetInputDto = {
+  customerId: string;
 };
-export type DefaultProductOutputDto = {
+export type DefaultBudgetOutputDto = {
   id: string;
-};
-
-export type GetProductOutputDto = {
-  id: string;
-  description: string;
-  value: number;
-};
-
-export type PutProductInputDto = {
-  description?: string;
-  value?: number;
 };
