@@ -1,13 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import { IProduct } from 'src/modules/product/domain/contract/Product.contract';
-import { BudgetItemDto, IBudgetItem } from './contract/BudgetItem.contract';
-
-export type BudgetItemBuilderDto = {
-  id?: string;
-  product: IProduct;
-  quantity: number;
-  discount: number;
-};
+import {
+  BudgetItemBuilderDto,
+  BudgetItemDto,
+  IBudgetItem,
+} from './contract/BudgetItem.contract';
 
 export class BudgetItem implements IBudgetItem {
   private id: string;

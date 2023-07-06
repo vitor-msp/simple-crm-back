@@ -22,7 +22,7 @@ export class BudgetDB {
   @JoinColumn()
   customer: CustomerDB;
 
-  @OneToMany(() => BudgetItemDB, (item) => item.budget)
+  @OneToMany(() => BudgetItemDB, (item) => item.budget, { cascade: true })
   items: BudgetItemDB[];
 
   get(): BudgetDto {
