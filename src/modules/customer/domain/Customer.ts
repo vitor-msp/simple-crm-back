@@ -1,34 +1,19 @@
 import { v4 as uuid } from 'uuid';
-import {
-  CustomerProps,
-  CustomerPropsCreate,
-  CustomerPropsDB,
-  ICustomer,
-} from './contract/Customer.contract';
+import { CustomerDto, ICustomer } from './contract/Customer.contract';
+
+export type CustomerBuildDto = {
+  id?: string;
+  name: string;
+  cpf: string;
+};
 
 export class Customer implements ICustomer {
   private id: string;
   private name: string;
   private cpf: string;
 
-  constructor(props: CustomerProps) {
-    if (props.saved) {
-      if (!props.savedProps) throw new Error('missing data');
-      this.buildFromDB(props.savedProps);
-      return;
-    }
-    if (!props.notSavedProps) throw new Error('missing data');
-    this.initialBuild(props.notSavedProps);
-  }
-
-  private buildFromDB(props: CustomerPropsDB): void {
-    this.id = props.id;
-    this.setName(props.name);
-    this.setCpf(props.cpf);
-  }
-
-  private initialBuild(props: CustomerPropsCreate): void {
-    this.id = uuid();
+  constructor(props: CustomerBuildDto) {
+    this.id = props.id ?? uuid();
     this.setName(props.name);
     this.setCpf(props.cpf);
   }
@@ -41,7 +26,7 @@ export class Customer implements ICustomer {
     this.cpf = cpf;
   }
 
-  get(): CustomerPropsDB {
+  get(): CustomerDto {
     return {
       cpf: this.cpf,
       id: this.id,

@@ -9,7 +9,7 @@ import {
   UpdateCustomerInputDto,
 } from './customer.dto';
 import { Customer } from './domain/Customer';
-import { CustomerDBBuilder } from 'src/database/schema/builders/CustomerDB.builder';
+import { CustomerBuilder } from './builders/CustomerBuilder';
 
 @Injectable()
 export class CustomerService {
@@ -21,11 +21,11 @@ export class CustomerService {
   async create(dto: CreateCustomerInputDto): Promise<DefaultCustomerOutputDto> {
     const { cpf, name } = dto;
     const customer = new Customer({
-      saved: false,
-      notSavedProps: { cpf, name },
+      cpf,
+      name,
     });
     const customerDB = new CustomerDB();
-    CustomerDBBuilder.hydrate(customerDB, customer.get());
+    CustomerBuilder.hydrateDB(customerDB, customer.get());
     await this.customersRepository.save(customerDB);
     return {
       id: customer.get().id,
@@ -51,13 +51,10 @@ export class CustomerService {
   ): Promise<DefaultCustomerOutputDto> {
     const customerDB = await this.customersRepository.findOneBy({ id });
     if (!customerDB) throw new Error('not found');
-    const customer = new Customer({
-      saved: true,
-      savedProps: customerDB.get(),
-    });
+    const customer = new Customer(customerDB.get());
     if (input.cpf) customer.setCpf(input.cpf);
     if (input.name) customer.setName(input.name);
-    CustomerDBBuilder.hydrate(customerDB, customer.get());
+    CustomerBuilder.hydrateDB(customerDB, customer.get());
     await this.customersRepository.save(customerDB);
     return {
       id: customerDB.id,

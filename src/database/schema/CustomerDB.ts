@@ -1,4 +1,4 @@
-import { CustomerPropsDB } from 'src/modules/customer/domain/contract/Customer.contract';
+import { CustomerDto } from 'src/modules/customer/domain/contract/Customer.contract';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -15,7 +15,7 @@ export class CustomerDB {
   @Column({ nullable: false, unique: true, length: 11 })
   cpf: string;
 
-  get(): CustomerPropsDB {
+  get(): CustomerDto {
     return {
       id: this.id,
       cpf: this.cpf,
