@@ -44,22 +44,20 @@ export class BudgetService {
   async get(id: string): Promise<GetBudgetOutputDto> {
     const budgetDB = await this.budgetsRepository.findOne({
       where: { id },
-      relations: { customer: true },
+      relations: { customer: true, items: true },
     });
     if (!budgetDB) throw new Error('not found');
     return {
       id: budgetDB.id,
       customerId: budgetDB.customer.id,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
       items: budgetDB.items
-        ? budgetDB.items.map(({ discount, budget, id, quantity, value }) => {
+        ? budgetDB.items.map(({ discount, id, quantity, value, product }) => {
             return {
               discount,
               id,
-              budgetId: budget.id,
               quantity,
               value,
+              productId: product.id,
             };
           })
         : [],
@@ -68,21 +66,19 @@ export class BudgetService {
 
   async getAll(): Promise<GetBudgetOutputDto[]> {
     const budgetsDB = await this.budgetsRepository.find({
-      relations: { customer: true },
+      relations: { customer: true, items: true },
     });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
     return budgetsDB.map((budget) => {
       const { customer, id } = budget;
       return {
         id,
         customerId: customer.id,
         items: budget.items
-          ? budget.items.map(({ discount, budget, id, quantity, value }) => {
+          ? budget.items.map(({ discount, id, quantity, value, product }) => {
               return {
                 discount,
                 id,
-                budgetId: budget.id,
+                productId: product.id,
                 quantity,
                 value,
               };
