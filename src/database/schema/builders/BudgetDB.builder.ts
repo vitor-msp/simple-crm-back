@@ -10,6 +10,5 @@ export abstract class BudgetDBBuilder {
   ): void {
     budget.id = props.id;
     budget.customer = customer;
-    budget.items = [];
   }
 }

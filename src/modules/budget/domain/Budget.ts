@@ -11,7 +11,7 @@ import { IBudgetItem } from './contract/BudgetItem.contract';
 
 export class Budget implements IBudget {
   private id: string;
-  private items: IBudgetItem[];
+  private items: IBudgetItem[] = [];
   private customer: ICustomer;
 
   constructor(props: BudgetProps) {
@@ -28,14 +28,12 @@ export class Budget implements IBudget {
     const { customer } = props;
     this.id = uuid();
     this.setCustomer(customer);
-    this.items = [];
   }
 
   private buildFromDB(props: BudgetPropsDBIn): void {
-    const { customer, id, items } = props;
+    const { customer, id } = props;
     this.id = id;
     this.setCustomer(customer);
-    this.items = items;
   }
 
   setCustomer(customer: ICustomer): void {

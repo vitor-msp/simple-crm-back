@@ -17,7 +17,6 @@ export type BudgetPropsCreate = {
 export type BudgetPropsDBIn = {
   id: string;
   customer: ICustomer;
-  items: IBudgetItem[];
 };
 
 export type BudgetPropsDBOut = {
