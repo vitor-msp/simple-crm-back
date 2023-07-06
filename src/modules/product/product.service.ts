@@ -9,7 +9,7 @@ import { Product } from './domain/Product';
 import { Repository } from 'typeorm';
 import { ProductDB } from 'src/database/schema/ProductDB';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductDBBuilder } from 'src/database/schema/builders/ProductDB.builder';
+import { ProductBuilder } from './builders/ProductBuilder';
 
 @Injectable()
 export class ProductService {
@@ -21,14 +21,11 @@ export class ProductService {
   async create(dto: CreateProductInputDto): Promise<DefaultProductOutputDto> {
     const { description, value } = dto;
     const product = new Product({
-      saved: false,
-      notSavedProps: {
-        description,
-        value,
-      },
+      description,
+      value,
     });
     const productDB = new ProductDB();
-    ProductDBBuilder.hydrate(productDB, product.get());
+    ProductBuilder.hydrateDB(productDB, product.get());
     await this.productsRepository.save(productDB);
     return {
       id: product.get().id,
@@ -54,13 +51,10 @@ export class ProductService {
   ): Promise<DefaultProductOutputDto> {
     const productDB = await this.productsRepository.findOneBy({ id });
     if (!productDB) throw new Error('not found');
-    const product = new Product({
-      saved: true,
-      savedProps: productDB.get(),
-    });
+    const product = new Product(productDB.get());
     if (input.description) product.setDescription(input.description);
     if (input.value) product.setValue(input.value);
-    ProductDBBuilder.hydrate(productDB, product.get());
+    ProductBuilder.hydrateDB(productDB, product.get());
     await this.productsRepository.save(productDB);
     return {
       id: productDB.id,

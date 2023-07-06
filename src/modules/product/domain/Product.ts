@@ -1,38 +1,21 @@
 import { v4 as uuid } from 'uuid';
-import {
-  IProduct,
-  ProductProps,
-  ProductPropsCreate,
-  ProductPropsDB,
-} from './contract/Product.contract';
+import { IProduct, ProductDto } from './contract/Product.contract';
+
+export type ProductBuildDto = {
+  id?: string;
+  description: string;
+  value: number;
+};
 
 export class Product implements IProduct {
   private id: string;
   private description: string;
   private value: number;
 
-  constructor(props: ProductProps) {
-    if (props.saved) {
-      if (!props.savedProps) throw new Error('missing data');
-      this.buildFromDB(props.savedProps);
-      return;
-    }
-    if (!props.notSavedProps) throw new Error('missing data');
-    this.initialBuild(props.notSavedProps);
-  }
-
-  private buildFromDB(props: ProductPropsDB): void {
-    const { description, id, value } = props;
-    this.id = id;
-    this.setDescription(description);
-    this.setValue(value);
-  }
-
-  private initialBuild(props: ProductPropsCreate): void {
-    const { description, value } = props;
-    this.id = uuid();
-    this.setDescription(description);
-    this.setValue(value);
+  constructor(props: ProductBuildDto) {
+    this.id = props.id ?? uuid();
+    this.setDescription(props.description);
+    this.setValue(props.value);
   }
 
   setDescription(description: string): void {
@@ -43,7 +26,7 @@ export class Product implements IProduct {
     this.value = value < 0 ? 0 : value;
   }
 
-  get(): ProductPropsDB {
+  get(): ProductDto {
     return { id: this.id, description: this.description, value: this.value };
   }
 }

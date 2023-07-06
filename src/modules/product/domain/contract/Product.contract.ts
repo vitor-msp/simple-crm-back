@@ -1,15 +1,4 @@
-export type ProductProps = {
-  saved: boolean;
-  notSavedProps?: ProductPropsCreate;
-  savedProps?: ProductPropsDB;
-};
-
-export type ProductPropsCreate = {
-  description: string;
-  value: number;
-};
-
-export type ProductPropsDB = {
+export type ProductDto = {
   id: string;
   description: string;
   value: number;
@@ -18,5 +7,5 @@ export type ProductPropsDB = {
 export interface IProduct {
   setDescription(description: string): void;
   setValue(value: number): void;
-  get(): ProductPropsDB;
+  get(): ProductDto;
 }
