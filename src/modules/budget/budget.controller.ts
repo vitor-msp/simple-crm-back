@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -54,6 +55,16 @@ export class BudgetController {
   ) {
     try {
       const output = await this.budgetService.update(id, input);
+      res.status(HttpStatus.OK).json(output);
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).send();
+    }
+  }
+
+  @Delete('/:id')
+  async delete(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const output = await this.budgetService.delete(id);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();

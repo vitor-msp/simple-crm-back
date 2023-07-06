@@ -50,12 +50,14 @@ export class BudgetService {
     return {
       id: budgetDB.id,
       customerId: budgetDB.customer.id,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       items: budgetDB.items
-        ? budgetDB.items.map(({ discount, product, id, quantity, value }) => {
+        ? budgetDB.items.map(({ discount, budget, id, quantity, value }) => {
             return {
               discount,
               id,
-              productId: product.id,
+              budgetId: budget.id,
               quantity,
               value,
             };
@@ -68,17 +70,19 @@ export class BudgetService {
     const budgetsDB = await this.budgetsRepository.find({
       relations: { customer: true },
     });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     return budgetsDB.map((budget) => {
       const { customer, id } = budget;
       return {
         id,
         customerId: customer.id,
         items: budget.items
-          ? budget.items.map(({ discount, product, id, quantity, value }) => {
+          ? budget.items.map(({ discount, budget, id, quantity, value }) => {
               return {
                 discount,
                 id,
-                productId: product.id,
+                budgetId: budget.id,
                 quantity,
                 value,
               };
@@ -125,6 +129,14 @@ export class BudgetService {
     await this.budgetsRepository.save(budgetDB);
     return {
       id: budgetDB.id,
+    };
+  }
+
+  async delete(id: string): Promise<DefaultBudgetOutputDto> {
+    const result = await this.budgetsRepository.delete({ id });
+    if (result.affected < 1) throw new Error('not found');
+    return {
+      id,
     };
   }
 }
