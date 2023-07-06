@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { CustomerDB } from './CustomerDB';
 import { BudgetItemDB } from './BudgetItemDB';
-import { BudgetPropsDBOut } from 'src/modules/budget/domain/contract/Budget.contract';
+import { BudgetDto } from 'src/modules/budget/domain/contract/Budget.contract';
 
 @Entity()
 export class BudgetDB {
@@ -25,13 +25,9 @@ export class BudgetDB {
   @OneToMany(() => BudgetItemDB, (item) => item.budget)
   items: BudgetItemDB[];
 
-  get(): BudgetPropsDBOut {
+  get(): BudgetDto {
     return {
       id: this.id,
-      customer: this.customer.get(),
-      items: this.items.map((i) => {
-        return i.get();
-      }),
     };
   }
 }

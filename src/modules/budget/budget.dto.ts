@@ -1,5 +1,7 @@
+import { CustomerDto } from '../customer/domain/contract/Customer.contract';
+
 export type CreateBudgetInputDto = {
-  customerId: string;
+  customer: { id: string };
 };
 
 export type DefaultBudgetOutputDto = {
@@ -8,18 +10,18 @@ export type DefaultBudgetOutputDto = {
 
 type GetBudgetItemOutputDto = {
   id: string;
-  productId: string;
   value: number;
   quantity: number;
   discount: number;
+  product: { id: string };
 };
 
 export type GetBudgetOutputDto = {
   id: string;
-  customerId: string;
+  customer: CustomerDto;
   items: GetBudgetItemOutputDto[];
 };
 
 export type UpdateBudgetInputDto = {
-  customerId?: string;
+  customer?: { id: string };
 };

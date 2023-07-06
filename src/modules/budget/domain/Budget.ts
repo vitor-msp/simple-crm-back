@@ -1,53 +1,37 @@
 import { v4 as uuid } from 'uuid';
-import {
-  BudgetProps,
-  BudgetPropsCreate,
-  BudgetPropsDBIn,
-  BudgetPropsDBOut,
-  IBudget,
-} from './contract/Budget.contract';
+import { BudgetDto, IBudget } from './contract/Budget.contract';
 import { ICustomer } from 'src/modules/customer/domain/contract/Customer.contract';
 import { IBudgetItem } from './contract/BudgetItem.contract';
+
+export type BudgetBuilderDto = {
+  id?: string;
+};
 
 export class Budget implements IBudget {
   private id: string;
   private items: IBudgetItem[] = [];
   private customer: ICustomer;
 
-  constructor(props: BudgetProps) {
-    if (props.saved) {
-      if (!props.savedProps) throw new Error('missing data');
-      this.buildFromDB(props.savedProps);
-      return;
-    }
-    if (!props.notSavedProps) throw new Error('missing data');
-    this.initialBuild(props.notSavedProps);
-  }
-
-  private initialBuild(props: BudgetPropsCreate): void {
-    const { customer } = props;
-    this.id = uuid();
-    this.setCustomer(customer);
-  }
-
-  private buildFromDB(props: BudgetPropsDBIn): void {
-    const { customer, id } = props;
-    this.id = id;
-    this.setCustomer(customer);
+  constructor(props: BudgetBuilderDto) {
+    this.id = props.id ?? uuid();
   }
 
   setCustomer(customer: ICustomer): void {
     this.customer = customer;
   }
 
-  get(): BudgetPropsDBOut {
+  get(): BudgetDto {
     return {
-      customer: this.customer.get(),
       id: this.id,
-      items: this.items.map((i) => {
-        return i.get();
-      }),
     };
+  }
+
+  getCustomer(): ICustomer {
+    return this.customer;
+  }
+
+  getItems(): IBudgetItem[] {
+    return this.items;
   }
 }
 

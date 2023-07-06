@@ -1,12 +1,13 @@
 import { v4 as uuid } from 'uuid';
 import { IProduct } from 'src/modules/product/domain/contract/Product.contract';
-import {
-  BudgetItemProps,
-  BudgetItemPropsCreate,
-  BudgetItemPropsDBIn,
-  BudgetItemPropsDBOut,
-  IBudgetItem,
-} from './contract/BudgetItem.contract';
+import { BudgetItemDto, IBudgetItem } from './contract/BudgetItem.contract';
+
+export type BudgetItemBuilderDto = {
+  id?: string;
+  product: IProduct;
+  quantity: number;
+  discount: number;
+};
 
 export class BudgetItem implements IBudgetItem {
   private id: string;
@@ -15,27 +16,9 @@ export class BudgetItem implements IBudgetItem {
   private quantity: number;
   private discount: number;
 
-  constructor(props: BudgetItemProps) {
-    if (props.saved) {
-      if (!props.savedProps) throw new Error('missing data');
-      this.buildFromDB(props.savedProps);
-      return;
-    }
-    if (!props.notSavedProps) throw new Error('missing data');
-    this.initialBuild(props.notSavedProps);
-  }
-
-  private initialBuild(props: BudgetItemPropsCreate): void {
+  constructor(props: BudgetItemBuilderDto) {
     const { discount, product, quantity } = props;
-    this.id = uuid();
-    this.setProduct(product);
-    this.setQuantity(quantity);
-    this.setDiscount(discount);
-  }
-
-  private buildFromDB(props: BudgetItemPropsDBIn): void {
-    const { discount, id, product, quantity } = props;
-    this.id = id;
+    this.id = props.id ?? uuid();
     this.setProduct(product);
     this.setQuantity(quantity);
     this.setDiscount(discount);
@@ -56,13 +39,16 @@ export class BudgetItem implements IBudgetItem {
     this.discount = discount < 0 ? 0 : discount;
   }
 
-  get(): BudgetItemPropsDBOut {
+  get(): BudgetItemDto {
     return {
-      discount: this.discount,
       id: this.id,
-      product: this.product.get(),
+      discount: this.discount,
       quantity: this.quantity,
       value: this.value,
     };
+  }
+
+  getProduct(): IProduct {
+    return this.product;
   }
 }

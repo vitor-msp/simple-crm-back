@@ -10,9 +10,8 @@ import {
 import { CustomerDB } from 'src/database/schema/CustomerDB';
 import { Customer } from 'src/modules/customer/domain/Customer';
 import { Budget } from './domain/Budget';
-import { BudgetDBBuilder } from 'src/database/schema/builders/BudgetDB.builder';
 import { BudgetDB } from 'src/database/schema/BudgetDB';
-import { ICustomer } from '../customer/domain/contract/Customer.contract';
+import { BudgetBuilder } from './builders/BudgetBuilder';
 
 @Injectable()
 export class BudgetService {
@@ -25,16 +24,14 @@ export class BudgetService {
 
   async create(dto: CreateBudgetInputDto): Promise<DefaultBudgetOutputDto> {
     const customerDB = await this.customersRepository.findOneBy({
-      id: dto.customerId,
+      id: dto.customer.id,
     });
     if (!customerDB) throw new Error('customer not found');
-    const customer = new Customer({
-      saved: true,
-      savedProps: customerDB.get(),
-    });
-    const budget = new Budget({ saved: false, notSavedProps: { customer } });
+    const customer = new Customer(customerDB.get());
+    const budget = new Budget({});
+    budget.setCustomer(customer);
     const budgetDB = new BudgetDB();
-    BudgetDBBuilder.hydrate(budgetDB, budget.get(), customerDB);
+    BudgetBuilder.hydrateDB(budgetDB, budget.get(), customerDB);
     await this.budgetsRepository.save(budgetDB);
     return {
       id: budget.get().id,
@@ -48,19 +45,9 @@ export class BudgetService {
     });
     if (!budgetDB) throw new Error('not found');
     return {
-      id: budgetDB.id,
-      customerId: budgetDB.customer.id,
-      items: budgetDB.items
-        ? budgetDB.items.map(({ discount, id, quantity, value, product }) => {
-            return {
-              discount,
-              id,
-              quantity,
-              value,
-              productId: product.id,
-            };
-          })
-        : [],
+      ...budgetDB.get(),
+      customer: budgetDB.customer.get(),
+      items: [],
     };
   }
 
@@ -69,21 +56,10 @@ export class BudgetService {
       relations: { customer: true, items: true },
     });
     return budgetsDB.map((budget) => {
-      const { customer, id } = budget;
       return {
-        id,
-        customerId: customer.id,
-        items: budget.items
-          ? budget.items.map(({ discount, id, quantity, value, product }) => {
-              return {
-                discount,
-                id,
-                productId: product.id,
-                quantity,
-                value,
-              };
-            })
-          : [],
+        ...budget.get(),
+        customer: budget.customer.get(),
+        items: [],
       };
     });
   }
@@ -94,34 +70,21 @@ export class BudgetService {
   ): Promise<DefaultBudgetOutputDto> {
     const budgetDB = await this.budgetsRepository.findOne({
       where: { id },
-      relations: { customer: true },
+      relations: { customer: true, items: true },
     });
     if (!budgetDB) throw new Error('budget not found');
     let customerDB: CustomerDB = budgetDB.customer;
-    const customer = new Customer({
-      saved: true,
-      savedProps: customerDB.get(),
-    });
-    const budget = new Budget({
-      saved: true,
-      savedProps: {
-        id: budgetDB.id,
-        customer,
-      },
-    });
-    let newCustomer: ICustomer;
-    if (input.customerId) {
+    const customer = new Customer(customerDB.get());
+    const budget = new Budget(budgetDB.get());
+    budget.setCustomer(customer);
+    if (input.customer) {
       customerDB = await this.customersRepository.findOneBy({
-        id: input.customerId,
+        id: input.customer.id,
       });
       if (!customerDB) throw new Error('customer not found');
-      newCustomer = new Customer({
-        saved: true,
-        savedProps: customerDB.get(),
-      });
-      budget.setCustomer(newCustomer);
+      budget.setCustomer(new Customer(customerDB.get()));
     }
-    BudgetDBBuilder.hydrate(budgetDB, budget.get(), customerDB);
+    BudgetBuilder.hydrateDB(budgetDB, budget.get(), customerDB);
     await this.budgetsRepository.save(budgetDB);
     return {
       id: budgetDB.id,
