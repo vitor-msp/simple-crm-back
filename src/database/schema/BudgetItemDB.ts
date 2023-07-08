@@ -34,6 +34,7 @@ export class BudgetItemDB extends BudgetItemAbsDB {
 
   @ManyToOne(() => BudgetDB, (budget) => budget.items, {
     orphanedRowAction: 'delete',
+    onDelete: 'CASCADE',
   })
   budget: BudgetDB;
 
