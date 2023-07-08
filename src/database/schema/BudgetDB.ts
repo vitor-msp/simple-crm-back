@@ -23,7 +23,9 @@ export class BudgetDB extends BudgetAbsDB {
   @JoinColumn()
   customer: CustomerDB;
 
-  @OneToMany(() => BudgetItemDB, (item) => item.budget, { cascade: true })
+  @OneToMany(() => BudgetItemDB, (item) => item.budget, {
+    cascade: ['insert', 'update', 'remove'],
+  })
   items: BudgetItemDB[];
 
   get(): BudgetDto {

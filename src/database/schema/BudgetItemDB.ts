@@ -32,7 +32,9 @@ export class BudgetItemDB extends BudgetItemAbsDB {
   @Column({ type: 'decimal', nullable: false })
   discount: number;
 
-  @ManyToOne(() => BudgetDB, (budget) => budget.items)
+  @ManyToOne(() => BudgetDB, (budget) => budget.items, {
+    orphanedRowAction: 'delete',
+  })
   budget: BudgetDB;
 
   get(): BudgetItemDto {

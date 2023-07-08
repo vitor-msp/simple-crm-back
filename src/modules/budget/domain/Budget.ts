@@ -35,16 +35,16 @@ export class Budget implements IBudget {
   //   if (item.quantity) savedItem.setQuantity(item.quantity);
   // }
 
-  // removeItem(id: string): void {
-  //   const index = this.findItem(id);
-  //   this.items.splice(index, 1);
-  // }
+  deleteItem(id: string): void {
+    const index = this.findItem(id);
+    this.items.splice(index, 1);
+  }
 
-  // private findItem(id: string): number {
-  //   const index = this.items.findIndex((i) => i.get().id === id);
-  //   if (index === -1) throw new Error('not found');
-  //   return index;
-  // }
+  private findItem(id: string): number {
+    const index = this.items.findIndex((i) => i.get().id === id);
+    if (index === -1) throw new Error('not found');
+    return index;
+  }
 
   get(): BudgetDto {
     return {

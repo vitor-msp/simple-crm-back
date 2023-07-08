@@ -21,7 +21,7 @@ export class BudgetsRepository implements IBudgetsRepository {
     private budgetsRepository: Repository<BudgetDB>,
   ) {}
 
-  private savePrimitiveData(budget: IBudget, budgetDB: BudgetDB): void {
+  private copyPrimitiveData(budget: IBudget, budgetDB: BudgetDB): void {
     const { id } = budget.get();
     budgetDB.id = id;
   }
@@ -32,7 +32,7 @@ export class BudgetsRepository implements IBudgetsRepository {
     customerDB?: CustomerDB,
   ): Promise<void> {
     if (!budgetDB) budgetDB = new BudgetDB();
-    this.savePrimitiveData(budget, budgetDB);
+    this.copyPrimitiveData(budget, budgetDB);
     if (customerDB) budgetDB.customer = customerDB;
     await this.budgetsRepository.save(budgetDB);
   }
@@ -81,7 +81,7 @@ export class BudgetsRepository implements IBudgetsRepository {
     productDB?: ProductDB,
   ): Promise<void> {
     let isCreate = false;
-    this.savePrimitiveData(budget, budgetDB);
+    this.copyPrimitiveData(budget, budgetDB);
     const budgetItem = budget.getItems().find((i) => i.get().id === itemId);
     if (!budgetItem) throw new Error('item not found');
     let budgetItemDB = budgetDB.items.find((i) => i.id === itemId);
@@ -89,13 +89,13 @@ export class BudgetsRepository implements IBudgetsRepository {
       budgetItemDB = new BudgetItemDB();
       isCreate = true;
     }
-    this.saveItemPrimitiveData(budgetItem, budgetItemDB);
+    this.copyItemPrimitiveData(budgetItem, budgetItemDB);
     if (productDB) budgetItemDB.product = productDB;
     if (isCreate) budgetDB.items.push(budgetItemDB);
     await this.budgetsRepository.save(budgetDB);
   }
 
-  private saveItemPrimitiveData(
+  private copyItemPrimitiveData(
     budgetItem: IBudgetItem,
     budgetItemDB: BudgetItemDB,
   ): void {
@@ -104,5 +104,16 @@ export class BudgetsRepository implements IBudgetsRepository {
     budgetItemDB.id = id;
     budgetItemDB.quantity = quantity;
     budgetItemDB.value = value;
+  }
+
+  async deleteItem(
+    budget: IBudget,
+    budgetDB: BudgetDB,
+    itemId: string,
+  ): Promise<void> {
+    this.copyPrimitiveData(budget, budgetDB);
+    const index = budgetDB.items.findIndex((i) => i.id === itemId);
+    budgetDB.items.splice(index, 1);
+    await this.budgetsRepository.save(budgetDB);
   }
 }

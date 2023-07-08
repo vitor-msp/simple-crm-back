@@ -33,7 +33,6 @@ export class BudgetItemController {
       const output = await this.budgetItemUsecase.createItem(budgetId, input);
       res.status(HttpStatus.CREATED).json(output);
     } catch (error) {
-      console.log(error);
       res.status(HttpStatus.BAD_REQUEST).send();
     }
   }
@@ -52,13 +51,17 @@ export class BudgetItemController {
   //   }
   // }
 
-  // @Delete('/:id')
-  // async delete(@Param('id') id: string, @Res() res: Response) {
-  //   try {
-  //     const output = await this.budgetItemUsecase.delete(id);
-  //     res.status(HttpStatus.OK).json(output);
-  //   } catch (error) {
-  //     res.status(HttpStatus.BAD_REQUEST).send();
-  //   }
-  // }
+  @Delete('/:itemId')
+  async delete(
+    @Param('budgetId') budgetId: string,
+    @Param('itemId') itemId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const output = await this.budgetItemUsecase.deleteItem(budgetId, itemId);
+      res.status(HttpStatus.OK).json(output);
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).send();
+    }
+  }
 }

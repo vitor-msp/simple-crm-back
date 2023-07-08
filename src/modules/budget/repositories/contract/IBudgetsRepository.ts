@@ -24,4 +24,9 @@ export interface IBudgetsRepository {
     itemId: string,
     productDB?: ProductAbsDB,
   ): Promise<void>;
+  deleteItem(
+    budget: IBudget,
+    budgetDB: BudgetAbsDB,
+    itemId: string,
+  ): Promise<void>;
 }

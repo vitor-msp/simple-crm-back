@@ -15,7 +15,7 @@ export interface IBudget {
   setCustomer(customer: ICustomer): void;
   createItem(item: BudgetItemBuildDto): { itemId: string };
   // updateItem(id: string, item: UpdateBudgetItemDto): void;
-  // removeItem(id: string): void;
+  deleteItem(id: string): void;
   get(): BudgetDto;
   getCustomer(): ICustomer;
   getItems(): IBudgetItem[];

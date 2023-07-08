@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DefaultBudgetOutputDto } from './contract/IBudgetUsecase';
 import {
   CreateBudgetItemInputDto,
+  DefaultBudgetItemOutputDto,
   IBudgetItemUsecase,
 } from './contract/IBudgetItemUsecase';
 import { BudgetsRepository } from '../repositories/BudgetsRepository';
@@ -61,11 +62,15 @@ export class BudgetItemUsecase implements IBudgetItemUsecase {
   //   };
   // }
 
-  // async deleteItem(id: string): Promise<DefaultBudgetOutputDto> {
-  //   const result = await this.budgetsRepository.delete({ id });
-  //   if (result.affected < 1) throw new Error('not found');
-  //   return {
-  //     id,
-  //   };
-  // }
+  async deleteItem(
+    budgetId: string,
+    itemId: string,
+  ): Promise<DefaultBudgetItemOutputDto> {
+    const { budget, budgetDB } = await this.budgetsRepository.get(budgetId);
+    budget.deleteItem(itemId);
+    await this.budgetsRepository.deleteItem(budget, budgetDB, itemId);
+    return {
+      id: itemId,
+    };
+  }
 }

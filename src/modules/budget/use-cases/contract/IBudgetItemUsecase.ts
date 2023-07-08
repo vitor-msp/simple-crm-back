@@ -33,4 +33,8 @@ export interface IBudgetItemUsecase {
     budgetId: string,
     dto: CreateBudgetItemInputDto,
   ): Promise<DefaultBudgetItemOutputDto>;
+  deleteItem(
+    budgetId: string,
+    itemId: string,
+  ): Promise<DefaultBudgetItemOutputDto>;
 }
