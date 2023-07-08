@@ -1,6 +1,6 @@
 import { ICustomer } from 'src/modules/customer/domain/contract/Customer.contract';
 import { BudgetItemBuilderDto, IBudgetItem } from './BudgetItem.contract';
-import { IProduct } from 'src/modules/product/domain/contract/Product.contract';
+import { IProduct } from 'src/modules/product/domain/contract/IProduct';
 
 export type BudgetDto = {
   id: string;

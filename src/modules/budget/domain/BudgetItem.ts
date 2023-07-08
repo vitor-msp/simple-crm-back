@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { IProduct } from 'src/modules/product/domain/contract/Product.contract';
+import { IProduct } from 'src/modules/product/domain/contract/IProduct';
 import {
   BudgetItemBuilderDto,
   BudgetItemDto,

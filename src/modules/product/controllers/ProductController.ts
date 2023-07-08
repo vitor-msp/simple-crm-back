@@ -4,23 +4,30 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Inject,
   Param,
   Post,
   Put,
   Res,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { CreateProductInputDto, UpdateProductInputDto } from './product.dto';
+import {
+  CreateProductInputDto,
+  IProductUsecase,
+  UpdateProductInputDto,
+} from '../use-cases/contract/IProductUsecase';
 import { Response } from 'express';
+import { ProductUsecase } from '../use-cases/ProductUsecase';
 
 @Controller('/product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    @Inject(ProductUsecase) private readonly productUsecase: IProductUsecase,
+  ) {}
 
   @Post()
   async post(@Body() input: CreateProductInputDto, @Res() res: Response) {
     try {
-      const output = await this.productService.create(input);
+      const output = await this.productUsecase.create(input);
       res.status(HttpStatus.CREATED).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -30,7 +37,7 @@ export class ProductController {
   @Get('/:id')
   async get(@Param('id') id: string, @Res() res: Response) {
     try {
-      const output = await this.productService.get(id);
+      const output = await this.productUsecase.get(id);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -40,7 +47,7 @@ export class ProductController {
   @Get()
   async getAll(@Res() res: Response) {
     try {
-      const output = await this.productService.getAll();
+      const output = await this.productUsecase.getAll();
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -54,7 +61,7 @@ export class ProductController {
     @Res() res: Response,
   ) {
     try {
-      const output = await this.productService.update(id, input);
+      const output = await this.productUsecase.update(id, input);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -64,7 +71,7 @@ export class ProductController {
   @Delete('/:id')
   async delete(@Param('id') id: string, @Res() res: Response) {
     try {
-      const output = await this.productService.delete(id);
+      const output = await this.productUsecase.delete(id);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();

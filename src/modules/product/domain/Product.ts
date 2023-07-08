@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { IProduct, ProductDto } from './contract/Product.contract';
+import { IProduct, ProductDto } from './contract/IProduct';
 
 export type ProductBuildDto = {
   id?: string;

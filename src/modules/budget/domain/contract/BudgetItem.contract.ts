@@ -1,4 +1,4 @@
-import { IProduct } from 'src/modules/product/domain/contract/Product.contract';
+import { IProduct } from 'src/modules/product/domain/contract/IProduct';
 
 export type BudgetItemBuilderDto = {
   id?: string;

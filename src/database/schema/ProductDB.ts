@@ -1,8 +1,9 @@
-import { ProductDto } from 'src/modules/product/domain/contract/Product.contract';
+import { ProductDto } from 'src/modules/product/domain/contract/IProduct';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ProductAbsDB } from './contract/ProductAbsDB';
 
 @Entity()
-export class ProductDB {
+export class ProductDB extends ProductAbsDB {
   @PrimaryGeneratedColumn()
   pk: number;
 
