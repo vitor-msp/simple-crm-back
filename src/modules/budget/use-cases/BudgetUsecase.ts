@@ -38,7 +38,12 @@ export class BudgetUsecase implements IBudgetUsecase {
     return {
       ...budget.get(),
       customer: budget.getCustomer().get(),
-      items: [],
+      items: budget.getItems().map((i) => {
+        return {
+          ...i.get(),
+          product: i.getProduct().get(),
+        };
+      }),
     };
   }
 
@@ -48,7 +53,6 @@ export class BudgetUsecase implements IBudgetUsecase {
       return {
         ...b.get(),
         customer: b.getCustomer().get(),
-        items: [],
       };
     });
   }

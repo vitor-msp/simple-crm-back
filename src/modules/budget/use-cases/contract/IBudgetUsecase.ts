@@ -1,3 +1,4 @@
+import { ProductDto } from 'src/modules/product/domain/contract/IProduct';
 import { CustomerDto } from '../../../customer/domain/contract/ICustomer';
 
 export type CreateBudgetInputDto = {
@@ -13,13 +14,13 @@ type GetBudgetItemOutputDto = {
   value: number;
   quantity: number;
   discount: number;
-  product: { id: string };
+  product: ProductDto;
 };
 
 export type GetBudgetOutputDto = {
   id: string;
   customer: CustomerDto;
-  items: GetBudgetItemOutputDto[];
+  items?: GetBudgetItemOutputDto[];
 };
 
 export type UpdateBudgetInputDto = {
