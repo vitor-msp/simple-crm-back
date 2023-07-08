@@ -1,42 +1,34 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { DefaultBudgetOutputDto } from './budget.dto';
-import { BudgetDB } from 'src/database/schema/BudgetDB';
-import { BudgetBuilder } from './builders/BudgetBuilder';
-import { ProductDB } from 'src/database/schema/ProductDB';
-import { Product } from '../product/domain/Product';
-import { CreateBudgetItemInputDto } from './budget-item.dto';
-import { BudgetItemBuilder } from './builders/BudgetItemBuilder';
+import { Inject, Injectable } from '@nestjs/common';
+import { DefaultBudgetOutputDto } from './contract/IBudgetUsecase';
+import {
+  CreateBudgetItemInputDto,
+  IBudgetItemUsecase,
+} from './contract/IBudgetItemUsecase';
+import { BudgetsRepository } from '../repositories/BudgetsRepository';
+import { IBudgetsRepository } from '../repositories/contract/IBudgetsRepository';
+import { ProductsRepository } from 'src/modules/product/repositories/ProductsRepository';
+import { IProductsRepository } from 'src/modules/product/repositories/contract/IProductsRepository';
 
 @Injectable()
-export class BudgetItemService {
+export class BudgetItemUsecase implements IBudgetItemUsecase {
   constructor(
-    @InjectRepository(BudgetDB)
-    private budgetsRepository: Repository<BudgetDB>,
-    @InjectRepository(ProductDB)
-    private productsRepository: Repository<ProductDB>,
+    @Inject(BudgetsRepository)
+    private readonly budgetsRepository: IBudgetsRepository,
+    @Inject(ProductsRepository)
+    private readonly productsRepository: IProductsRepository,
   ) {}
 
   async createItem(
     budgetId: string,
     dto: CreateBudgetItemInputDto,
   ): Promise<DefaultBudgetOutputDto> {
-    const budgetDB = await this.budgetsRepository.findOne({
-      where: { id: budgetId },
-      relations: { customer: true, items: { product: true } },
-    });
-    if (!budgetDB) throw new Error('budget not found');
-    const productDB = await this.productsRepository.findOneBy({
-      id: dto.product.id,
-    });
-    if (!productDB) throw new Error('product not found');
-    const budget = BudgetBuilder.hydrateDomain(budgetDB);
-    const product = new Product(productDB.get());
+    const { budget, budgetDB } = await this.budgetsRepository.get(budgetId);
+    const { product, productDB } = await this.productsRepository.get(
+      dto.product.id,
+    );
     const { discount, quantity } = dto;
-    const itemId = budget.createItem({ discount, quantity, product });
-    BudgetItemBuilder.hydrateAndCreateItem(budgetDB, budget, productDB, itemId);
-    await this.budgetsRepository.save(budgetDB);
+    const { itemId } = budget.createItem({ discount, quantity, product });
+    await this.budgetsRepository.saveItem(budget, budgetDB, itemId, productDB);
     return {
       id: itemId,
     };

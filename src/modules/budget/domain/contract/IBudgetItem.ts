@@ -1,15 +1,15 @@
 import { IProduct } from 'src/modules/product/domain/contract/IProduct';
 
-export type BudgetItemBuilderDto = {
-  id?: string;
-  product: IProduct;
+export type BudgetItemDto = {
+  id: string;
+  value: number;
   quantity: number;
   discount: number;
 };
 
-export type BudgetItemDto = {
-  id: string;
-  value: number;
+export type BudgetItemBuildDto = {
+  id?: string;
+  product: IProduct;
   quantity: number;
   discount: number;
 };

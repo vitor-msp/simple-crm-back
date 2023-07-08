@@ -14,6 +14,10 @@ export type CreateBudgetItemInputDto = {
   discount: number;
 };
 
+export type DefaultBudgetItemOutputDto = {
+  id: string;
+};
+
 // export type GetBudgetOutputDto = {
 //   id: string;
 //   customer: CustomerDto;
@@ -23,3 +27,10 @@ export type CreateBudgetItemInputDto = {
 // export type UpdateBudgetInputDto = {
 //   customer?: { id: string };
 // };
+
+export interface IBudgetItemUsecase {
+  createItem(
+    budgetId: string,
+    dto: CreateBudgetItemInputDto,
+  ): Promise<DefaultBudgetItemOutputDto>;
+}

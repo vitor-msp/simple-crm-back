@@ -1,4 +1,4 @@
-import { CustomerDto } from '../customer/domain/contract/ICustomer';
+import { CustomerDto } from '../../../customer/domain/contract/ICustomer';
 
 export type CreateBudgetInputDto = {
   customer: { id: string };
@@ -25,3 +25,14 @@ export type GetBudgetOutputDto = {
 export type UpdateBudgetInputDto = {
   customer?: { id: string };
 };
+
+export interface IBudgetUsecase {
+  create(dto: CreateBudgetInputDto): Promise<DefaultBudgetOutputDto>;
+  get(id: string): Promise<GetBudgetOutputDto>;
+  getAll(): Promise<GetBudgetOutputDto[]>;
+  update(
+    id: string,
+    input: UpdateBudgetInputDto,
+  ): Promise<DefaultBudgetOutputDto>;
+  delete(id: string): Promise<DefaultBudgetOutputDto>;
+}

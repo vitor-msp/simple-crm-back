@@ -8,10 +8,11 @@ import {
 } from 'typeorm';
 import { ProductDB } from './ProductDB';
 import { BudgetDB } from './BudgetDB';
-import { BudgetItemDto } from 'src/modules/budget/domain/contract/BudgetItem.contract';
+import { BudgetItemDto } from 'src/modules/budget/domain/contract/IBudgetItem';
+import { BudgetItemAbsDB } from './contract/BudgetItemAbsDB';
 
 @Entity()
-export class BudgetItemDB {
+export class BudgetItemDB extends BudgetItemAbsDB {
   @PrimaryGeneratedColumn()
   pk: number;
 

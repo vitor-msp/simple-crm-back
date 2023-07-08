@@ -4,23 +4,30 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Inject,
   Param,
   Post,
   Put,
   Res,
 } from '@nestjs/common';
-import { BudgetService } from './budget.service';
-import { CreateBudgetInputDto, UpdateBudgetInputDto } from './budget.dto';
+import { BudgetUsecase } from '../use-cases/BudgetUsecase';
+import {
+  CreateBudgetInputDto,
+  IBudgetUsecase,
+  UpdateBudgetInputDto,
+} from '../use-cases/contract/IBudgetUsecase';
 import { Response } from 'express';
 
 @Controller('/budget')
 export class BudgetController {
-  constructor(private readonly budgetService: BudgetService) {}
+  constructor(
+    @Inject(BudgetUsecase) private readonly budgetUsecase: IBudgetUsecase,
+  ) {}
 
   @Post()
   async post(@Body() input: CreateBudgetInputDto, @Res() res: Response) {
     try {
-      const output = await this.budgetService.create(input);
+      const output = await this.budgetUsecase.create(input);
       res.status(HttpStatus.CREATED).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -30,7 +37,7 @@ export class BudgetController {
   @Get('/:id')
   async get(@Param('id') id: string, @Res() res: Response) {
     try {
-      const output = await this.budgetService.get(id);
+      const output = await this.budgetUsecase.get(id);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -40,7 +47,7 @@ export class BudgetController {
   @Get()
   async getAll(@Res() res: Response) {
     try {
-      const output = await this.budgetService.getAll();
+      const output = await this.budgetUsecase.getAll();
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -54,7 +61,7 @@ export class BudgetController {
     @Res() res: Response,
   ) {
     try {
-      const output = await this.budgetService.update(id, input);
+      const output = await this.budgetUsecase.update(id, input);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -64,7 +71,7 @@ export class BudgetController {
   @Delete('/:id')
   async delete(@Param('id') id: string, @Res() res: Response) {
     try {
-      const output = await this.budgetService.delete(id);
+      const output = await this.budgetUsecase.delete(id);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();

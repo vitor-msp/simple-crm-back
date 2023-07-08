@@ -3,18 +3,25 @@ import {
   Controller,
   Delete,
   HttpStatus,
+  Inject,
   Param,
   Post,
   Put,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { BudgetItemService } from './budget-item.service';
-import { CreateBudgetItemInputDto } from './budget-item.dto';
+import {
+  CreateBudgetItemInputDto,
+  IBudgetItemUsecase,
+} from '../use-cases/contract/IBudgetItemUsecase';
+import { BudgetItemUsecase } from '../use-cases/BudgetItemUsecase';
 
 @Controller('/budget/:budgetId/item')
 export class BudgetItemController {
-  constructor(private readonly budgetItemService: BudgetItemService) {}
+  constructor(
+    @Inject(BudgetItemUsecase)
+    private readonly budgetItemUsecase: IBudgetItemUsecase,
+  ) {}
 
   @Post()
   async post(
@@ -23,7 +30,7 @@ export class BudgetItemController {
     @Res() res: Response,
   ) {
     try {
-      const output = await this.budgetItemService.createItem(budgetId, input);
+      const output = await this.budgetItemUsecase.createItem(budgetId, input);
       res.status(HttpStatus.CREATED).json(output);
     } catch (error) {
       console.log(error);
@@ -38,7 +45,7 @@ export class BudgetItemController {
   //   @Res() res: Response,
   // ) {
   //   try {
-  //     const output = await this.budgetItemService.update(id, input);
+  //     const output = await this.budgetItemUsecase.update(id, input);
   //     res.status(HttpStatus.OK).json(output);
   //   } catch (error) {
   //     res.status(HttpStatus.BAD_REQUEST).send();
@@ -48,7 +55,7 @@ export class BudgetItemController {
   // @Delete('/:id')
   // async delete(@Param('id') id: string, @Res() res: Response) {
   //   try {
-  //     const output = await this.budgetItemService.delete(id);
+  //     const output = await this.budgetItemUsecase.delete(id);
   //     res.status(HttpStatus.OK).json(output);
   //   } catch (error) {
   //     res.status(HttpStatus.BAD_REQUEST).send();

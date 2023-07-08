@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import { IProduct } from 'src/modules/product/domain/contract/IProduct';
 import {
-  BudgetItemBuilderDto,
+  BudgetItemBuildDto,
   BudgetItemDto,
   IBudgetItem,
-} from './contract/BudgetItem.contract';
+} from './contract/IBudgetItem';
 
 export class BudgetItem implements IBudgetItem {
   private id: string;
@@ -13,7 +13,7 @@ export class BudgetItem implements IBudgetItem {
   private quantity: number;
   private discount: number;
 
-  constructor(props: BudgetItemBuilderDto) {
+  constructor(props: BudgetItemBuildDto) {
     const { discount, product, quantity } = props;
     this.id = props.id ?? uuid();
     this.setProduct(product);
