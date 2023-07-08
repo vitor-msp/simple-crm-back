@@ -13,6 +13,7 @@ import { Response } from 'express';
 import {
   CreateBudgetItemInputDto,
   IBudgetItemUsecase,
+  UpdateBudgetItemInputDto,
 } from '../use-cases/contract/IBudgetItemUsecase';
 import { BudgetItemUsecase } from '../use-cases/BudgetItemUsecase';
 
@@ -37,19 +38,24 @@ export class BudgetItemController {
     }
   }
 
-  // @Put('/:id')
-  // async put(
-  //   @Param('id') id: string,
-  //   @Body() input: UpdateBudgetInputDto,
-  //   @Res() res: Response,
-  // ) {
-  //   try {
-  //     const output = await this.budgetItemUsecase.update(id, input);
-  //     res.status(HttpStatus.OK).json(output);
-  //   } catch (error) {
-  //     res.status(HttpStatus.BAD_REQUEST).send();
-  //   }
-  // }
+  @Put('/:itemId')
+  async put(
+    @Param('budgetId') budgetId: string,
+    @Param('itemId') itemId: string,
+    @Body() input: UpdateBudgetItemInputDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const output = await this.budgetItemUsecase.updateItem(
+        budgetId,
+        itemId,
+        input,
+      );
+      res.status(HttpStatus.OK).json(output);
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).send();
+    }
+  }
 
   @Delete('/:itemId')
   async delete(

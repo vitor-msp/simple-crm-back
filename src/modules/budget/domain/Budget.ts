@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { BudgetDto, IBudget } from './contract/IBudget';
+import { BudgetDto, BudgetItemUpdateDto, IBudget } from './contract/IBudget';
 import { ICustomer } from 'src/modules/customer/domain/contract/ICustomer';
 import { BudgetItemBuildDto, IBudgetItem } from './contract/IBudgetItem';
 import { BudgetItem } from './BudgetItem';
@@ -27,13 +27,13 @@ export class Budget implements IBudget {
     return { itemId: budgetItem.get().id };
   }
 
-  // updateItem(id: string, item: UpdateBudgetItemDto): void {
-  //   const index = this.findItem(id);
-  //   const savedItem = this.items.at(index);
-  //   if (item.discount) savedItem.setDiscount(item.discount);
-  //   if (item.product) savedItem.setProduct(item.product);
-  //   if (item.quantity) savedItem.setQuantity(item.quantity);
-  // }
+  updateItem(id: string, item: BudgetItemUpdateDto): void {
+    const index = this.findItem(id);
+    const savedItem = this.items.at(index);
+    if (item.discount) savedItem.setDiscount(item.discount);
+    if (item.product) savedItem.setProduct(item.product);
+    if (item.quantity) savedItem.setQuantity(item.quantity);
+  }
 
   deleteItem(id: string): void {
     const index = this.findItem(id);

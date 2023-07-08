@@ -4,6 +4,7 @@ import {
   CreateBudgetItemInputDto,
   DefaultBudgetItemOutputDto,
   IBudgetItemUsecase,
+  UpdateBudgetItemInputDto,
 } from './contract/IBudgetItemUsecase';
 import { BudgetsRepository } from '../repositories/BudgetsRepository';
 import { IBudgetsRepository } from '../repositories/contract/IBudgetsRepository';
@@ -35,32 +36,28 @@ export class BudgetItemUsecase implements IBudgetItemUsecase {
     };
   }
 
-  // async updateItem(
-  //   id: string,
-  //   input: UpdateBudgetInputDto,
-  // ): Promise<DefaultBudgetOutputDto> {
-  //   const budgetDB = await this.budgetsRepository.findOne({
-  //     where: { id },
-  //     relations: { customer: true, items: true },
-  //   });
-  //   if (!budgetDB) throw new Error('budget not found');
-  //   let customerDB: CustomerDB = budgetDB.customer;
-  //   const customer = new Customer(customerDB.get());
-  //   const budget = new Budget(budgetDB.get());
-  //   budget.setCustomer(customer);
-  //   if (input.customer) {
-  //     customerDB = await this.productsRepository.findOneBy({
-  //       id: input.customer.id,
-  //     });
-  //     if (!customerDB) throw new Error('customer not found');
-  //     budget.setCustomer(new Customer(customerDB.get()));
-  //   }
-  //   BudgetBuilder.hydrateDB(budgetDB, budget.get(), customerDB);
-  //   await this.budgetsRepository.save(budgetDB);
-  //   return {
-  //     id: budgetDB.id,
-  //   };
-  // }
+  async updateItem(
+    budgetId: string,
+    itemId: string,
+    dto: UpdateBudgetItemInputDto,
+  ): Promise<DefaultBudgetItemOutputDto> {
+    const { budget, budgetDB } = await this.budgetsRepository.get(budgetId);
+    let product, productDB;
+    if (dto.product) {
+      const entities = await this.productsRepository.get(dto.product.id);
+      product = entities.product;
+      productDB = entities.productDB;
+    }
+    budget.updateItem(itemId, {
+      discount: dto.discount,
+      product: product,
+      quantity: dto.quantity,
+    });
+    await this.budgetsRepository.saveItem(budget, budgetDB, itemId, productDB);
+    return {
+      id: itemId,
+    };
+  }
 
   async deleteItem(
     budgetId: string,
