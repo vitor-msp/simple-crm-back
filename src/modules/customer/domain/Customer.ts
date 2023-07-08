@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { CustomerDto, ICustomer } from './contract/Customer.contract';
+import { CustomerDto, ICustomer } from './contract/ICustomer';
 
 export type CustomerBuildDto = {
   id?: string;

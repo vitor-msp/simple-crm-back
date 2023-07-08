@@ -1,8 +1,9 @@
-import { CustomerDto } from 'src/modules/customer/domain/contract/Customer.contract';
+import { CustomerDto } from 'src/modules/customer/domain/contract/ICustomer';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { CustomerAbsDB } from './contract/CustomerAbsDB';
 
 @Entity()
-export class CustomerDB {
+export class CustomerDB extends CustomerAbsDB {
   @PrimaryGeneratedColumn()
   pk: number;
 

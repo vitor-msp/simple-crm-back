@@ -1,4 +1,4 @@
-import { ICustomer } from 'src/modules/customer/domain/contract/Customer.contract';
+import { ICustomer } from 'src/modules/customer/domain/contract/ICustomer';
 import { BudgetItemBuilderDto, IBudgetItem } from './BudgetItem.contract';
 import { IProduct } from 'src/modules/product/domain/contract/IProduct';
 

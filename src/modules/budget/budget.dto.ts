@@ -1,4 +1,4 @@
-import { CustomerDto } from '../customer/domain/contract/Customer.contract';
+import { CustomerDto } from '../customer/domain/contract/ICustomer';
 
 export type CreateBudgetInputDto = {
   customer: { id: string };

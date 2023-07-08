@@ -4,23 +4,30 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Inject,
   Param,
   Post,
   Put,
   Res,
 } from '@nestjs/common';
-import { CustomerService } from './customer.service';
-import { CreateCustomerInputDto, UpdateCustomerInputDto } from './customer.dto';
 import { Response } from 'express';
+import {
+  CreateCustomerInputDto,
+  ICustomerUsecase,
+  UpdateCustomerInputDto,
+} from '../use-cases/contract/ICustomerUsecase';
+import { CustomerUsecase } from '../use-cases/CustomerUsecase';
 
 @Controller('/customer')
 export class CustomerController {
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(
+    @Inject(CustomerUsecase) private readonly customerUsecase: ICustomerUsecase,
+  ) {}
 
   @Post()
   async post(@Body() input: CreateCustomerInputDto, @Res() res: Response) {
     try {
-      const output = await this.customerService.create(input);
+      const output = await this.customerUsecase.create(input);
       res.status(HttpStatus.CREATED).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -30,7 +37,7 @@ export class CustomerController {
   @Get('/:id')
   async get(@Param('id') id: string, @Res() res: Response) {
     try {
-      const output = await this.customerService.get(id);
+      const output = await this.customerUsecase.get(id);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -40,7 +47,7 @@ export class CustomerController {
   @Get()
   async getAll(@Res() res: Response) {
     try {
-      const output = await this.customerService.getAll();
+      const output = await this.customerUsecase.getAll();
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -54,7 +61,7 @@ export class CustomerController {
     @Res() res: Response,
   ) {
     try {
-      const output = await this.customerService.update(id, input);
+      const output = await this.customerUsecase.update(id, input);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
@@ -64,7 +71,7 @@ export class CustomerController {
   @Delete('/:id')
   async delete(@Param('id') id: string, @Res() res: Response) {
     try {
-      const output = await this.customerService.delete(id);
+      const output = await this.customerUsecase.delete(id);
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();

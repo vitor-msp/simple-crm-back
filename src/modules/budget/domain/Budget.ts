@@ -4,7 +4,7 @@ import {
   IBudget,
   UpdateBudgetItemDto,
 } from './contract/Budget.contract';
-import { ICustomer } from 'src/modules/customer/domain/contract/Customer.contract';
+import { ICustomer } from 'src/modules/customer/domain/contract/ICustomer';
 import {
   BudgetItemBuilderDto,
   IBudgetItem,
