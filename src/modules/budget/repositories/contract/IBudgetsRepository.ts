@@ -2,6 +2,7 @@ import { BudgetAbsDB } from 'src/database/schema/contract/BudgetAbsDB';
 import { IBudget } from '../../domain/contract/IBudget';
 import { CustomerAbsDB } from 'src/database/schema/contract/CustomerAbsDB';
 import { ProductAbsDB } from 'src/database/schema/contract/ProductAbsDB';
+import { GetManyQuery } from '../../use-cases/contract/IBudgetUsecase';
 
 export interface IBudgetsRepository {
   save(
@@ -16,7 +17,7 @@ export interface IBudgetsRepository {
     budgetDB: BudgetAbsDB;
     customerDB: CustomerAbsDB;
   }>;
-  getAll(): Promise<IBudget[]>;
+  getMany(query?: GetManyQuery): Promise<IBudget[]>;
   delete(id: string): Promise<void>;
   saveItem(
     budget: IBudget,

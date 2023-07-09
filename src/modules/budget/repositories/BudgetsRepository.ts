@@ -4,7 +4,7 @@ import { IBudgetsRepository } from './contract/IBudgetsRepository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BudgetDB } from 'src/database/schema/BudgetDB';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { Budget } from '../domain/Budget';
 import { CustomerDB } from 'src/database/schema/CustomerDB';
 import { CustomerAbsDB } from 'src/database/schema/contract/CustomerAbsDB';
@@ -13,6 +13,7 @@ import { ProductDB } from 'src/database/schema/ProductDB';
 import { Product } from 'src/modules/product/domain/Product';
 import { BudgetItemDB } from 'src/database/schema/BudgetItemDB';
 import { IBudgetItem } from '../domain/contract/IBudgetItem';
+import { GetManyQuery } from '../use-cases/contract/IBudgetUsecase';
 
 @Injectable()
 export class BudgetsRepository implements IBudgetsRepository {
@@ -57,9 +58,14 @@ export class BudgetsRepository implements IBudgetsRepository {
     return { budget, budgetDB, customerDB: budgetDB.customer };
   }
 
-  async getAll(): Promise<IBudget[]> {
+  async getMany(query?: GetManyQuery): Promise<IBudget[]> {
+    let where: FindOptionsWhere<BudgetDB>;
+    if (query.customerId)
+      where = {
+        customer: { id: query.customerId },
+      };
     const budgetsDB = await this.budgetsRepository.find({
-      where: {},
+      where,
       relations: { customer: true },
     });
     return budgetsDB.map((b) => {

@@ -3,6 +3,7 @@ import {
   CreateBudgetInputDto,
   DefaultBudgetOutputDto,
   GetBudgetOutputDto,
+  GetManyQuery,
   IBudgetUsecase,
   UpdateBudgetInputDto,
 } from './contract/IBudgetUsecase';
@@ -47,8 +48,8 @@ export class BudgetUsecase implements IBudgetUsecase {
     };
   }
 
-  async getAll(): Promise<GetBudgetOutputDto[]> {
-    const budgets = await this.budgetsRepository.getAll();
+  async getMany(query?: GetManyQuery): Promise<GetBudgetOutputDto[]> {
+    const budgets = await this.budgetsRepository.getMany(query);
     return budgets.map((b) => {
       return {
         ...b.get(),

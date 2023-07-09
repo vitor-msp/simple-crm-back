@@ -27,10 +27,14 @@ export type UpdateBudgetInputDto = {
   customer?: { id: string };
 };
 
+export type GetManyQuery = {
+  customerId: string;
+};
+
 export interface IBudgetUsecase {
   create(dto: CreateBudgetInputDto): Promise<DefaultBudgetOutputDto>;
   get(id: string): Promise<GetBudgetOutputDto>;
-  getAll(): Promise<GetBudgetOutputDto[]>;
+  getMany(query?: GetManyQuery): Promise<GetBudgetOutputDto[]>;
   update(
     id: string,
     input: UpdateBudgetInputDto,

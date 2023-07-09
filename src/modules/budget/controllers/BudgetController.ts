@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { BudgetUsecase } from '../use-cases/BudgetUsecase';
@@ -45,9 +46,9 @@ export class BudgetController {
   }
 
   @Get()
-  async getAll(@Res() res: Response) {
+  async getMany(@Query('customerId') customerId: string, @Res() res: Response) {
     try {
-      const output = await this.budgetUsecase.getAll();
+      const output = await this.budgetUsecase.getMany({ customerId });
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();
