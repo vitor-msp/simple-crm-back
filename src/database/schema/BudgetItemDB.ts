@@ -2,9 +2,8 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
   ManyToOne,
+  Unique,
 } from 'typeorm';
 import { ProductDB } from './ProductDB';
 import { BudgetDB } from './BudgetDB';
@@ -12,6 +11,7 @@ import { BudgetItemDto } from 'src/modules/budget/domain/contract/IBudgetItem';
 import { BudgetItemAbsDB } from './contract/BudgetItemAbsDB';
 
 @Entity()
+@Unique('unique_budget_product', ['budget', 'product'])
 export class BudgetItemDB extends BudgetItemAbsDB {
   @PrimaryGeneratedColumn()
   pk: number;
@@ -19,8 +19,7 @@ export class BudgetItemDB extends BudgetItemAbsDB {
   @Column({ nullable: false, unique: true, length: 36 })
   id: string;
 
-  @OneToOne(() => ProductDB)
-  @JoinColumn()
+  @ManyToOne(() => ProductDB, (product) => product.budgetItems)
   product: ProductDB;
 
   @Column({ type: 'decimal', nullable: false })

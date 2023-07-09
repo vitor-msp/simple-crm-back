@@ -1,6 +1,7 @@
 import { ProductDto } from 'src/modules/product/domain/contract/IProduct';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { ProductAbsDB } from './contract/ProductAbsDB';
+import { BudgetItemDB } from './BudgetItemDB';
 
 @Entity()
 export class ProductDB extends ProductAbsDB {
@@ -15,6 +16,9 @@ export class ProductDB extends ProductAbsDB {
 
   @Column({ type: 'decimal', nullable: false })
   value: number;
+
+  @OneToMany(() => BudgetItemDB, (budgetItem) => budgetItem.product)
+  budgetItems: BudgetItemDB[];
 
   get(): ProductDto {
     return {

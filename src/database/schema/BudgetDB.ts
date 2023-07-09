@@ -5,6 +5,7 @@ import {
   JoinColumn,
   OneToOne,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { CustomerDB } from './CustomerDB';
 import { BudgetItemDB } from './BudgetItemDB';
@@ -19,8 +20,7 @@ export class BudgetDB extends BudgetAbsDB {
   @Column({ nullable: false, unique: true, length: 36 })
   id: string;
 
-  @OneToOne(() => CustomerDB)
-  @JoinColumn()
+  @ManyToOne(() => CustomerDB, (customer) => customer.budgets)
   customer: CustomerDB;
 
   @OneToMany(() => BudgetItemDB, (item) => item.budget, {

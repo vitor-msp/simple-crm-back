@@ -1,6 +1,7 @@
 import { CustomerDto } from 'src/modules/customer/domain/contract/ICustomer';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { CustomerAbsDB } from './contract/CustomerAbsDB';
+import { BudgetDB } from './BudgetDB';
 
 @Entity()
 export class CustomerDB extends CustomerAbsDB {
@@ -15,6 +16,9 @@ export class CustomerDB extends CustomerAbsDB {
 
   @Column({ nullable: false, unique: true, length: 11 })
   cpf: string;
+
+  @OneToMany(() => BudgetDB, (budget) => budget.customer)
+  budgets: BudgetDB[];
 
   get(): CustomerDto {
     return {
