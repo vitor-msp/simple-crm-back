@@ -4,6 +4,12 @@ export type ProductDto = {
   value: number;
 };
 
+export type ProductBuildDto = {
+  id?: string;
+  description: string;
+  value: number;
+};
+
 export interface IProduct {
   setDescription(description: string): void;
   setValue(value: number): void;

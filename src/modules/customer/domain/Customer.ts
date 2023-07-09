@@ -1,11 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { CustomerDto, ICustomer } from './contract/ICustomer';
-
-export type CustomerBuildDto = {
-  id?: string;
-  name: string;
-  cpf: string;
-};
+import { CustomerBuildDto, CustomerDto, ICustomer } from './contract/ICustomer';
 
 export class Customer implements ICustomer {
   private id: string;

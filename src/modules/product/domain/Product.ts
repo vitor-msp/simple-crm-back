@@ -1,11 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { IProduct, ProductDto } from './contract/IProduct';
-
-export type ProductBuildDto = {
-  id?: string;
-  description: string;
-  value: number;
-};
+import { IProduct, ProductBuildDto, ProductDto } from './contract/IProduct';
 
 export class Product implements IProduct {
   private id: string;

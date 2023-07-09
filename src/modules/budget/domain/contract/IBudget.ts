@@ -7,6 +7,11 @@ export type BudgetDto = {
   createdAt: string;
 };
 
+export type BudgetBuildDto = {
+  id?: string;
+  createdAt?: string;
+};
+
 export type BudgetItemUpdateDto = {
   product?: IProduct;
   quantity?: number;
