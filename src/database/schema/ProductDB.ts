@@ -15,7 +15,7 @@ export class ProductDB extends ProductAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
-  @Index()
+  @Index('product_index')
   id: string;
 
   @Column({ type: 'text', nullable: false })

@@ -18,7 +18,7 @@ export class BudgetItemDB extends BudgetItemAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
-  @Index()
+  @Index('budget_item_index')
   id: string;
 
   @ManyToOne(() => ProductDB, (product) => product.budgetItems)

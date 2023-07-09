@@ -19,7 +19,7 @@ export class BudgetDB extends BudgetAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
-  @Index()
+  @Index('budget_index')
   id: string;
 
   @ManyToOne(() => CustomerDB, (customer) => customer.budgets)

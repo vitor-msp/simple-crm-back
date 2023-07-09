@@ -15,7 +15,7 @@ export class CustomerDB extends CustomerAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
-  @Index()
+  @Index('customer_index')
   id: string;
 
   @Column({ type: 'text', nullable: false })
