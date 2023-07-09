@@ -59,20 +59,31 @@ export class BudgetsRepository implements IBudgetsRepository {
   }
 
   async getMany(query?: GetManyQuery): Promise<IBudget[]> {
-    let where: FindOptionsWhere<BudgetDB>;
-    if (query.customerId)
-      where = {
-        customer: { id: query.customerId },
-      };
+    const where = this.getWhere(query);
     const budgetsDB = await this.budgetsRepository.find({
       where,
-      relations: { customer: true },
+      relations: { customer: true, items: { product: true } },
     });
     return budgetsDB.map((b) => {
       const budget = new Budget(b.get());
       budget.setCustomer(new Customer(b.customer.get()));
       return budget;
     });
+  }
+
+  private getWhere(query?: GetManyQuery): FindOptionsWhere<BudgetDB> {
+    let where: FindOptionsWhere<BudgetDB>;
+    if (query.customerId)
+      where = {
+        ...where,
+        customer: { id: query.customerId },
+      };
+    if (query.productId)
+      where = {
+        ...where,
+        items: { product: { id: query.productId } },
+      };
+    return where;
   }
 
   async delete(id: string): Promise<void> {

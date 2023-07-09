@@ -46,9 +46,16 @@ export class BudgetController {
   }
 
   @Get()
-  async getMany(@Query('customerId') customerId: string, @Res() res: Response) {
+  async getMany(
+    @Query('customerId') customerId: string,
+    @Query('productId') productId: string,
+    @Res() res: Response,
+  ) {
     try {
-      const output = await this.budgetUsecase.getMany({ customerId });
+      const output = await this.budgetUsecase.getMany({
+        customerId,
+        productId,
+      });
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send();

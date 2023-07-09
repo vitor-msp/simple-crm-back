@@ -29,6 +29,7 @@ export type UpdateBudgetInputDto = {
 
 export type GetManyQuery = {
   customerId: string;
+  productId: string;
 };
 
 export interface IBudgetUsecase {
