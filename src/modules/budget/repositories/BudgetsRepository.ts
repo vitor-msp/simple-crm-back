@@ -1,3 +1,4 @@
+import { And, FindOperator, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { BudgetAbsDB } from 'src/database/schema/contract/BudgetAbsDB';
 import { IBudget } from '../domain/contract/IBudget';
 import { IBudgetsRepository } from './contract/IBudgetsRepository';
@@ -84,6 +85,17 @@ export class BudgetsRepository implements IBudgetsRepository {
         ...where,
         items: { product: { id: query.productId } },
       };
+    if (query.createdAtInitial || query.createdAtFinal) {
+      const findOperators: FindOperator<string>[] = [];
+      if (query.createdAtInitial)
+        findOperators.push(MoreThanOrEqual(query.createdAtInitial));
+      if (query.createdAtFinal)
+        findOperators.push(LessThanOrEqual(query.createdAtFinal));
+      where = {
+        ...where,
+        createAt: And(...findOperators),
+      };
+    }
     return where;
   }
 

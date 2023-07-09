@@ -49,12 +49,16 @@ export class BudgetController {
   async getMany(
     @Query('customerId') customerId: string,
     @Query('productId') productId: string,
+    @Query('createdAtInitial') createdAtInitial: string,
+    @Query('createdAtFinal') createdAtFinal: string,
     @Res() res: Response,
   ) {
     try {
       const output = await this.budgetUsecase.getMany({
         customerId,
         productId,
+        createdAtInitial,
+        createdAtFinal,
       });
       res.status(HttpStatus.OK).json(output);
     } catch (error) {
