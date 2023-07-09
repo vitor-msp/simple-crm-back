@@ -1,6 +1,3 @@
-import { ConfigModule } from '@nestjs/config';
-ConfigModule.forRoot();
-
 import { DataSource } from 'typeorm';
 import { Module } from '@nestjs/common';
 import { ProductModule } from './modules/product/product.module';
