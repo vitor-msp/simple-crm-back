@@ -1,5 +1,11 @@
 import { ProductDto } from 'src/modules/product/domain/contract/IProduct';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Index,
+} from 'typeorm';
 import { ProductAbsDB } from './contract/ProductAbsDB';
 import { BudgetItemDB } from './BudgetItemDB';
 
@@ -9,6 +15,7 @@ export class ProductDB extends ProductAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
+  @Index()
   id: string;
 
   @Column({ type: 'text', nullable: false })

@@ -6,6 +6,7 @@ import {
   OneToOne,
   OneToMany,
   ManyToOne,
+  Index,
 } from 'typeorm';
 import { CustomerDB } from './CustomerDB';
 import { BudgetItemDB } from './BudgetItemDB';
@@ -18,6 +19,7 @@ export class BudgetDB extends BudgetAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
+  @Index()
   id: string;
 
   @ManyToOne(() => CustomerDB, (customer) => customer.budgets)

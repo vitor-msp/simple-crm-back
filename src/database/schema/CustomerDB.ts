@@ -1,5 +1,11 @@
 import { CustomerDto } from 'src/modules/customer/domain/contract/ICustomer';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Index,
+} from 'typeorm';
 import { CustomerAbsDB } from './contract/CustomerAbsDB';
 import { BudgetDB } from './BudgetDB';
 
@@ -9,6 +15,7 @@ export class CustomerDB extends CustomerAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
+  @Index()
   id: string;
 
   @Column({ type: 'text', nullable: false })

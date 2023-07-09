@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   Unique,
+  Index,
 } from 'typeorm';
 import { ProductDB } from './ProductDB';
 import { BudgetDB } from './BudgetDB';
@@ -17,6 +18,7 @@ export class BudgetItemDB extends BudgetItemAbsDB {
   pk: number;
 
   @Column({ nullable: false, unique: true, length: 36 })
+  @Index()
   id: string;
 
   @ManyToOne(() => ProductDB, (product) => product.budgetItems)
