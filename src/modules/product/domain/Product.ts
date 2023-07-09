@@ -23,7 +23,7 @@ export class Product implements IProduct {
   }
 
   setValue(value: number): void {
-    this.value = value < 0 ? 0 : value;
+    this.value = value < 0 ? 0 : +value;
   }
 
   get(): ProductDto {

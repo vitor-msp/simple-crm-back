@@ -21,7 +21,7 @@ export class ProductDB extends ProductAbsDB {
   @Column({ type: 'text', nullable: false })
   description: string;
 
-  @Column({ type: 'decimal', nullable: false })
+  @Column('decimal', { precision: 11, scale: 2, nullable: false })
   value: number;
 
   @OneToMany(() => BudgetItemDB, (budgetItem) => budgetItem.product)

@@ -24,13 +24,13 @@ export class BudgetItemDB extends BudgetItemAbsDB {
   @ManyToOne(() => ProductDB, (product) => product.budgetItems)
   product: ProductDB;
 
-  @Column({ type: 'decimal', nullable: false })
+  @Column('decimal', { precision: 11, scale: 2, nullable: false })
   value: number;
 
   @Column({ type: 'integer', nullable: false })
   quantity: number;
 
-  @Column({ type: 'decimal', nullable: false })
+  @Column('decimal', { precision: 11, scale: 2, nullable: false })
   discount: number;
 
   @ManyToOne(() => BudgetDB, (budget) => budget.items, {

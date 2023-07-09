@@ -23,17 +23,17 @@ export class BudgetItem implements IBudgetItem {
 
   setProduct(product: IProduct): void {
     this.product = product;
-    const value = product.get().value;
+    const value = +product.get().value;
     this.value = value < 0 ? 0 : value;
   }
 
   setQuantity(quantity: number): void {
-    this.quantity = quantity <= 0 ? 1 : quantity;
+    this.quantity = quantity <= 0 ? 1 : +quantity;
   }
 
   setDiscount(discount?: number): void {
     if (!discount) discount = 0;
-    this.discount = discount < 0 ? 0 : discount;
+    this.discount = discount < 0 ? 0 : +discount;
   }
 
   get(): BudgetItemDto {
