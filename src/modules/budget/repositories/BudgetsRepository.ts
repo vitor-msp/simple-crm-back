@@ -23,8 +23,9 @@ export class BudgetsRepository implements IBudgetsRepository {
   ) {}
 
   private copyPrimitiveData(budget: IBudget, budgetDB: BudgetDB): void {
-    const { id } = budget.get();
+    const { id, createdAt } = budget.get();
     budgetDB.id = id;
+    budgetDB.createAt = createdAt;
   }
 
   async save(

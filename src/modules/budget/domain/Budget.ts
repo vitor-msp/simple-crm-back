@@ -6,15 +6,18 @@ import { BudgetItem } from './BudgetItem';
 
 export type BudgetBuildDto = {
   id?: string;
+  createdAt?: string;
 };
 
 export class Budget implements IBudget {
   private id: string;
   private items: IBudgetItem[] = [];
   private customer: ICustomer;
+  private createdAt: string;
 
   constructor(props: BudgetBuildDto) {
     this.id = props.id ?? uuid();
+    this.createdAt = props.createdAt ?? new Date().toISOString();
   }
 
   setCustomer(customer: ICustomer): void {
@@ -49,6 +52,7 @@ export class Budget implements IBudget {
   get(): BudgetDto {
     return {
       id: this.id,
+      createdAt: this.createdAt,
     };
   }
 

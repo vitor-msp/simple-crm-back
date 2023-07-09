@@ -4,6 +4,7 @@ import { IProduct } from 'src/modules/product/domain/contract/IProduct';
 
 export type BudgetDto = {
   id: string;
+  createdAt: string;
 };
 
 export type BudgetItemUpdateDto = {

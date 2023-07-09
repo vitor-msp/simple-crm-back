@@ -30,9 +30,13 @@ export class BudgetDB extends BudgetAbsDB {
   })
   items: BudgetItemDB[];
 
+  @Column({ nullable: false })
+  createAt: string;
+
   get(): BudgetDto {
     return {
       id: this.id,
+      createdAt: this.createAt,
     };
   }
 }
